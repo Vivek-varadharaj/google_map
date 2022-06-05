@@ -18,9 +18,14 @@ class MapAndLocationServices {
     return _mapAndLocationServices;
   }
 
-  Future<ErrorObject> getPermission() async {
+  Future<ErrorObject> getPermission(
+      {required bool askForTurningOnLocation}) async {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled!) {
+      if (askForTurningOnLocation) {
+        await Geolocator.openLocationSettings();
+      }
+
       return ErrorObject(key: 'Location services are disabled.', value: false);
     }
 
@@ -43,7 +48,7 @@ class MapAndLocationServices {
   }
 
   Future<LatLng> getCoordinates() async {
-    await getPermission();
+    await getPermission(askForTurningOnLocation: true);
     Position position = await Geolocator.getCurrentPosition();
 
     return LatLng(position.latitude, position.longitude);

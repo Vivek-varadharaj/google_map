@@ -6,7 +6,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MapAndLocationServices mapAndLocationServices = MapAndLocationServices();
   final ErrorObject isSuccess =
-      await mapAndLocationServices.getPermission();
+      await mapAndLocationServices.getPermission(askForTurningOnLocation: false);
 
   runApp(MyApp(isSuccess: isSuccess));
 }

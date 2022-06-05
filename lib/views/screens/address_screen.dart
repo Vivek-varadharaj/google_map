@@ -66,14 +66,20 @@ class _AdressScreenState extends State<AdressScreen> {
   Widget getLocationButton() {
     return TextButton.icon(
         onPressed: () async {
-          ErrorObject isSuccess =
-              await _mapAndLocationServices!.getPermission();
+          ErrorObject isSuccess = await _mapAndLocationServices!
+              .getPermission(askForTurningOnLocation: true);
           if (isSuccess.value) {
             // ignore: use_build_context_synchronously
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => MapsScreen(
                       setTheLocationInPreviousScreen: getLocationName,
                     )));
+          } else if (!isSuccess.value &&
+              isSuccess.key == "Location services are disabled.") {
+            // ignore: use_build_context_synchronously
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text(
+                    "Please turn on the location service firs and try again")));
           } else {
             showDialog(
                 context: context,

@@ -1,3 +1,4 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -44,8 +45,25 @@ class MapAndLocationServices {
   Future<LatLng> getCoordinates() async {
     await getPermission();
     Position position = await Geolocator.getCurrentPosition();
-  
+
     return LatLng(position.latitude, position.longitude);
+  }
+
+  Future<String> getPlaceNameFromCordinates(LatLng latLng) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+      if (placemarks.isNotEmpty) {
+        print(placemarks[0].locality);
+        return placemarks[0].locality ??
+            placemarks[0].country ??
+            "We got your latitude and longitude, but address we didn't find, that is a google service problem";
+      }
+    } catch (error) {
+      return "We got your latitude and longitude, but address we didn't find that is a google service problem";
+    }
+
+    return "We got your latitude and longitude, but address we didn't find that is a google service problem";
   }
 
   getMarker(LatLng latLng) {

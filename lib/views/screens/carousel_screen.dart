@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:info_skies_map/controllers/image_controller.dart';
 import 'package:info_skies_map/models/image_model.dart';
-import 'package:info_skies_map/views/screens/map_screen.dart';
+import 'package:info_skies_map/views/screens/address_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CarouseScreen extends StatelessWidget {
@@ -16,8 +16,8 @@ class CarouseScreen extends StatelessWidget {
       backgroundColor: Colors.black87,
       floatingActionButton: ElevatedButton(
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const MapScreen()));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const AdressScreen()));
         },
         child: const Text("Get your location on Map"),
       ),

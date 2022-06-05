@@ -6,14 +6,14 @@ import 'package:info_skies_map/configs/constants.dart';
 import 'package:info_skies_map/services/map_and_location_services.dart';
 import 'package:info_skies_map/views/screens/maps_screen.dart';
 
-class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+class AdressScreen extends StatefulWidget {
+  const AdressScreen({Key? key}) : super(key: key);
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  State<AdressScreen> createState() => _AdressScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _AdressScreenState extends State<AdressScreen> {
   MapAndLocationServices? _mapAndLocationServices;
   String? location;
   TextEditingController? _locationTextController;
@@ -30,7 +30,15 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: !showLocation
-          ? Center(child: getLocationButton())
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                location != null && location!.isNotEmpty
+                    ? Center(child: Text("Your Location is $location"))
+                    : const SizedBox(),
+                Center(child: getLocationButton()),
+              ],
+            )
           : Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -58,8 +66,10 @@ class _MapScreenState extends State<MapScreen> {
               await _mapAndLocationServices!.getPermission();
           if (isSuccess.value) {
             // ignore: use_build_context_synchronously
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const MapsScreen()));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => MapsScreen(
+                      setTheLocationInPreviousScreen: getLocationName,
+                    )));
           } else {
             showDialog(
                 context: context,
@@ -107,5 +117,11 @@ class _MapScreenState extends State<MapScreen> {
         },
         icon: const Icon(Icons.location_city_sharp),
         label: const Text("Get your location"));
+  }
+
+  void getLocationName(LatLng latLng) async {
+    location =
+        await _mapAndLocationServices!.getPlaceNameFromCordinates(latLng);
+    setState(() {});
   }
 }

@@ -3,7 +3,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:info_skies_map/services/map_and_location_services.dart';
 
 class MapsScreen extends StatefulWidget {
-  const MapsScreen({Key? key}) : super(key: key);
+  final Function setTheLocationInPreviousScreen;
+  const MapsScreen({Key? key, required this.setTheLocationInPreviousScreen})
+      : super(key: key);
 
   @override
   State<MapsScreen> createState() => _MapsScreenState();
@@ -26,16 +28,21 @@ class _MapsScreenState extends State<MapsScreen> {
           if (snapShot.hasData) {
             markers[const MarkerId("1")] =
                 _mapAndLocationServices!.getMarker(snapShot.data!);
-            return GoogleMap(
-              mapType: MapType.normal,
-              onMapCreated: (controller) =>
-                  _mapAndLocationServices!.onMapCreated(controller),
-              initialCameraPosition: CameraPosition(
-                target: snapShot.data!,
-                zoom: 8,
-              ),
+            widget.setTheLocationInPreviousScreen(snapShot.data);
+            return Stack(
+              children: [
+                GoogleMap(
+                  mapType: MapType.normal,
+                  onMapCreated: (controller) =>
+                      _mapAndLocationServices!.onMapCreated(controller),
+                  initialCameraPosition: CameraPosition(
+                    target: snapShot.data!,
+                    zoom: 8,
+                  ),
 
-              markers: Set<Marker>.of(markers.values), // YOUR MARKS IN MAP
+                  markers: Set<Marker>.of(markers.values), // YOUR MARKS IN MAP
+                ),
+              ],
             );
           } else if (snapShot.connectionState == ConnectionState.waiting) {
             return const Scaffold(

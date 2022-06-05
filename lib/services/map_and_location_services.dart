@@ -51,19 +51,20 @@ class MapAndLocationServices {
 
   Future<String> getPlaceNameFromCordinates(LatLng latLng) async {
     try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latLng.latitude,
+        latLng.longitude,
+      );
       if (placemarks.isNotEmpty) {
-        print(placemarks[0].locality);
         return placemarks[0].locality ??
             placemarks[0].country ??
-            "We got your latitude and longitude, but address we didn't find, that is a google service problem";
+            "Address not found in Google api";
       }
     } catch (error) {
-      return "We got your latitude and longitude, but address we didn't find that is a google service problem";
+      return "Address not found in Google api";
     }
 
-    return "We got your latitude and longitude, but address we didn't find that is a google service problem";
+    return "Address not found in Google api";
   }
 
   getMarker(LatLng latLng) {

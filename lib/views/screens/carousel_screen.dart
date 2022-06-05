@@ -52,9 +52,17 @@ class CarouseScreen extends StatelessWidget {
                               width: MediaQuery.of(context).size.width,
                               imageUrl: snapShot.data![index].largeImageUrl)));
                 }
+                if (snapShot.connectionState == ConnectionState.waiting) {
+                  const Center(child: CircularProgressIndicator());
+                } else if (snapShot.hasError ||
+                    snapShot.hasData && snapShot.data == null) {
+                  return const Center(
+                    child: Text("Some error occured"),
+                  );
+                }
 
                 return const Center(
-                  child: Text("Some error occured"),
+                  child: Center(child: CircularProgressIndicator()),
                 );
               }),
         ),

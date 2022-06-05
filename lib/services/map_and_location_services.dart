@@ -2,6 +2,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapAndLocationServices {
+  bool? serviceEnabled;
+  LocationPermission? permission;
   static final MapAndLocationServices _mapAndLocationServices =
       MapAndLocationServices.singleton();
   MapAndLocationServices.singleton();
@@ -15,28 +17,34 @@ class MapAndLocationServices {
     return _mapAndLocationServices;
   }
 
-  Future<LatLng> determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  Future<ErrorObject> getPermission() async {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+    if (!serviceEnabled!) {
+      return ErrorObject(key: 'Location services are disabled.', value: false);
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return ErrorObject(
+            key: 'Location permissions are denied', value: false);
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return ErrorObject(
+          key:
+              'Location permissions are permanently denied, we cannot request permissions.',
+          value: false);
     }
+    return ErrorObject(key: "Success", value: true);
+  }
 
+  Future<LatLng> getCoordinates() async {
+    await getPermission();
     Position position = await Geolocator.getCurrentPosition();
+  
     return LatLng(position.latitude, position.longitude);
   }
 
@@ -62,4 +70,10 @@ class MapAndLocationServices {
         CameraPosition(
             target: latLng, zoom: 15, tilt: tilt + 45, bearing: bearing)));
   }
+}
+
+class ErrorObject {
+  String key;
+  bool value;
+  ErrorObject({required this.key, required this.value});
 }

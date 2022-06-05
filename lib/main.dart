@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:info_skies_map/views/screens/map_screen.dart';
+import 'package:info_skies_map/services/map_and_location_services.dart';
+import 'package:info_skies_map/views/screens/carousel_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  MapAndLocationServices mapAndLocationServices = MapAndLocationServices();
+  final ErrorObject isSuccess =
+      await mapAndLocationServices.getPermission();
+
+  runApp(MyApp(isSuccess: isSuccess));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final ErrorObject isSuccess;
+  const MyApp({Key? key, required this.isSuccess}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MapScreen(),
+      home: Scaffold(body: CarouseScreen()),
     );
   }
 }

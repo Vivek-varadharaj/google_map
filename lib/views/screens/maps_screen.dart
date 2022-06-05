@@ -66,10 +66,9 @@ class _MapsScreenState extends State<MapsScreen> {
                 );
               }),
             );
-          } else if (snapShot.connectionState == ConnectionState.done) {
-            return const SizedBox();
-          } else
-            return Text("jaslkjdflj");
+          } else {
+            return const Center(child: Text("Somethig went wrong"));
+          }
         });
   }
 }

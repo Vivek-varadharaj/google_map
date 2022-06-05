@@ -34,7 +34,11 @@ class _AdressScreenState extends State<AdressScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 location != null && location!.isNotEmpty
-                    ? Center(child: Text("Your Location is $location"))
+                    ? Padding(
+                        padding: const EdgeInsets.all(16),
+                        child:
+                            Center(child: Text("Your Location is $location")),
+                      )
                     : const SizedBox(),
                 Center(child: getLocationButton()),
               ],
